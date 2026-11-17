@@ -1,3 +1,10 @@
+## 2.8.2
+- Corrección de numeración de semanas: las cabeceras usan ahora la semana ISO real de cada lunes.
+- Se soportan años ISO con semana 53 sin asumir un máximo fijo de 52 semanas.
+- El inicio visible de 2027 se muestra correctamente como `SEMANA 53` (lunes 28/12/2026), seguido de `SEMANA 1` el 04/01/2027.
+- No se modifican las rotaciones ni las anclas históricas; el cambio afecta a la numeración visible de semanas.
+- Añadidas pruebas de regresión para 2026→2027 y futuros años con semana 53.
+
 ## 2.8.1
 - Corrección: los festivos locales generan `D` en todos los calendarios no rotatorios.
 - Rotatorio aplica sufijo festivo (`MF`/`TF`/`NF`/`RF`...) también a los festivos locales.
