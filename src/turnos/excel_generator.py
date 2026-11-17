@@ -655,7 +655,8 @@ def _write_headers(ws, dates: List[date], holidays: Dict[date, HolidayInfo], cal
         c1 = cal_start + week_idx * 7
         c2 = c1 + 6
         ws.merge_cells(start_row=2, start_column=c1, end_row=2, end_column=c2)
-        ws.cell(2, c1).value = f"SEMANA {(week_idx % 52) + 1}"
+        iso_week = dates[week_idx * 7].isocalendar().week
+        ws.cell(2, c1).value = f"SEMANA {iso_week}"
         ws.cell(2, c1)._style = copy(styles["week"])
         ws.cell(2, c1).alignment = Alignment(horizontal="center", vertical="center")
 

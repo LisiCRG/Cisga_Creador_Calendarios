@@ -281,7 +281,7 @@ def _schedule_intensivo_tape(spec: CalendarSpec, year: int, holidays: Dict[date,
             else:
                 week_shift = _week_index(d, anchor)
                 # Si la plantilla elige una persona inicial, esa persona ocupa
-                # la primera TT de la cinta en la Semana 1 del año. Después la
+                # la primera TT de la cinta en la primera semana visible del cuadrante. Después la
                 # cinta baja una fila por semana. Sin selección se conserva la
                 # ancla histórica de versiones anteriores.
                 state = tape[(person_index - start_index - week_shift) % width]
@@ -438,7 +438,7 @@ def schedule_rotatorio(spec: CalendarSpec, year: int, holidays: Dict[date, Holid
     explicit_start = any(p.start_phase is not None for p in spec.people)
     if explicit_start:
         offsets = choose_offsets_with_fixed(spec.people, cycle_families, "R", max_r, phase_step=7)
-        anchor = calendar_start(year) + timedelta(days=2)  # miércoles de la Semana 1
+        anchor = calendar_start(year) + timedelta(days=2)  # miércoles de la primera semana visible
     else:
         offsets = choose_offsets(len(spec.people), cycle_families, "R", max_r, phase_step=7)
         anchor = date.fromisoformat(str(spec.settings.get("anchor_night", "2025-12-31")))
