@@ -1,0 +1,44 @@
+GENERADOR DE CUADRANTES v2.7.1
+============================
+
+Recomendado: Python 3.11 de 64 bits en Windows.
+
+1) Crear entorno
+   crear_entorno.bat
+
+2) Ejecutar en desarrollo
+   ejecutar_desarrollo.bat
+
+3) Probar manualmente
+   - Pulsa "Generar plantilla tipo...".
+   - Selecciona esa plantilla.
+   - Configura festivos locales.
+   - Selecciona uno o varios calendarios.
+   - Genera en una carpeta de prueba.
+
+4) Ejecutar tests
+   .venv\Scripts\python.exe -m pytest -q
+
+5) Compilar
+   compilar_exe.bat
+
+Salida:
+   dist\GENERADOR_TURNOS.exe
+
+PyInstaller incluye dentro del ejecutable:
+   assets\
+   data\
+   templates\Plantilla_Cuadrantes_Usuarios_v10.xlsx
+   templates_tipo\*.xlsx
+   recursos internos de python-holidays (incluidos catálogos de traducción)
+
+El usuario final no necesita tener Python instalado.
+
+IMPORTANTE v2.7
+---------------
+La compilación debe hacerse con el `.spec` incluido en esta versión.
+No reutilices un `GENERADOR_TURNOS.spec` de v2.5. El comando de
+`compilar_exe.bat` utiliza `--clean` y empaqueta los catálogos de
+`python-holidays`, corrigiendo el error:
+
+   [Errno 2] No translation file found for domain: 'ES'
