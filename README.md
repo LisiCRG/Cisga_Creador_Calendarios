@@ -1,4 +1,12 @@
-# GENERADOR DE CUADRANTES v2.8.1
+# GENERADOR DE CUADRANTES v2.8.2
+
+## Corrección v2.8.2 · Semanas ISO y años con semana 53
+
+- Las cabeceras `SEMANA n` se calculan con la numeración ISO real del calendario.
+- Los años con semana 53 quedan soportados automáticamente, sin asumir que todos tienen 52 semanas.
+- En 2027, la primera semana visible (28/12/2026–03/01/2027) aparece como **SEMANA 53** y la siguiente como **SEMANA 1**.
+- Las rotaciones históricas y los ciclos configurados no cambian: siguen basados en fechas/anclas reales.
+- Los selectores de inicio 1/2/3 siguen siendo posiciones relativas a las primeras semanas visibles, no números ISO.
 
 ## Corrección v2.8.1 · Festivos locales
 
@@ -200,9 +208,9 @@ py -3.11 -m venv .venv
 
 La plantilla v13 mantiene celdas **rosa pastel** para decidir cómo comienza el año sin cambiar la regla del turno:
 
-- **Intensivo**: persona que ocupa la primera posición TT de la cinta en la Semana 1.
+- **Intensivo**: persona que ocupa la primera posición TT de la cinta en la primera semana visible del cuadrante.
 - **Rotatorio**: fase F01..F12 por agente, manteniendo Noches en miércoles y Refuerzo de lunes a viernes.
-- **EasyVista / Puesto Usuario**: semana 1, 2 o 3 en la que cada persona realiza su primer TT.
+- **EasyVista / Puesto Usuario**: posición 1, 2 o 3 entre las primeras semanas visibles en la que cada persona realiza su primer TT.
 - **Farmacia**: persona que trabaja el primer sábado del año.
 - **Sistemas**: inicio del ciclo `2 presenciales + 1 TT`.
 - **Supervisores**: orden TT 1/2/3 por subgrupo.
