@@ -1,3 +1,7 @@
+## 2.8.5
+- Se elimina únicamente la pestaña Organización del Excel individual de Sistemas Áreas Especializadas.
+- Sin cambios en el General CAU, los demás calendarios ni las reglas de turnos.
+
 ## 2.8.4
 - El General CAU incorpora Leyenda y LeyendaROTATORIO en dos pestañas independientes, reutilizando las referencias visuales de v2.8.3.
 - Se sustituye la leyenda unificada. Ambas se incluyen siempre, sin Organización ni Conteo.

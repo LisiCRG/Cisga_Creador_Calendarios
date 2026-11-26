@@ -5,6 +5,7 @@ import pytest
 from openpyxl import load_workbook
 from turnos.excel_generator import generate_excel
 from turnos.models import CalendarSpec, HolidayInfo, PersonSpec
+from turnos.paths import type_template_file
 from turnos.scheduler import build_schedule, calendar_dates, is_tt_code, SchedulingError
 from turnos.template_reader import load_template
 
@@ -62,6 +63,12 @@ def test_individual_reference_legend(tmp_path,key):
     path=tmp_path/'output.xlsx'
     generate_excel(spec,build_schedule(spec,2027,{}),{},2027,'Castilla y León','Valladolid',path)
     wb=load_workbook(path)
+    # v2.8.5: Organización se elimina solo en Sistemas.
+    source = load_workbook(type_template_file(key), read_only=True)
+    try:
+        assert ('Organización' in wb.sheetnames) == (key != 'Sistemas' and 'Organización' in source.sheetnames)
+    finally:
+        source.close()
     rot=key=='Rotatorio'
     ws=wb['LeyendaROTATORIO' if rot else 'Leyenda']
     assert ('Leyenda' not in wb.sheetnames) if rot else ('LeyendaROTATORIO' not in wb.sheetnames)

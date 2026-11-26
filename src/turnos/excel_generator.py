@@ -1116,6 +1116,9 @@ def generate_excel(
     _write_holidays(wb, year, community, holidays)
     install_legend(wb, spec.key == "Rotatorio")
     _write_tt_conteo(wb, spec, schedule, dates, year)
+    # Solo el Excel individual de Sistemas deja de incluir Organización.
+    if spec.key == "Sistemas" and "Organización" in wb.sheetnames:
+        del wb["Organización"]
     if spec.key == "Rotatorio":
         _write_rotatorio_ndf(ws, spec, dates, year, layout)
 

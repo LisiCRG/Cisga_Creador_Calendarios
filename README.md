@@ -1,4 +1,9 @@
-# GENERADOR DE CUADRANTES v2.8.4
+# GENERADOR DE CUADRANTES v2.8.5
+
+## Corrección v2.8.5 · Sistemas Áreas Especializadas
+
+- El Excel individual de Sistemas Áreas Especializadas ya no incluye la pestaña `Organización`.
+- Se mantienen las demás pestañas, las plantillas de origen, el General CAU y todas las reglas de planificación.
 
 ## Corrección v2.8.4 · Leyendas del General CAU
 
