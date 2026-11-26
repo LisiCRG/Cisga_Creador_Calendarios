@@ -39,7 +39,7 @@ def test_general_has_one_calendar_sheet_plus_common_auxiliary_sheets(tmp_path):
     generate_general_excel(generated, 2027, target)
 
     wb = load_workbook(target, data_only=False)
-    assert wb.sheetnames == ["General", "Leyenda", "Organización", "Festivos 2027"]
+    assert wb.sheetnames == ["General", "Leyenda", "Festivos 2027"]
     wb.close()
 
 

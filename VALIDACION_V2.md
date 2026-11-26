@@ -46,7 +46,7 @@ Se cargan y generan correctamente los siete calendarios para 2027 usando `Planti
 
 - 73/73 pruebas correctas ejecutadas por bloques.
 - Regresión específica para formatos fantasma del General.
-- Validación de Leyenda única, Organización única y Festivos único.
+- Validación de Leyenda única y Festivos único; General sin Organización ni Conteo desde v2.8.3.
 
 
 ## v2.8.0

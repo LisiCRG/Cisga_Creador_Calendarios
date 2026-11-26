@@ -759,8 +759,6 @@ def _assign_supervisor_tt_offsets(
     guard_anchor: date,
 ) -> Dict[str, int]:
     """Distribuye TT por grupo y respeta el orden inicial elegido en rosa."""
-    from math import lcm
-
     invalid_start = [p for p in group_people if p.start_phase is not None and not p.telework_enabled]
     if invalid_start:
         person = invalid_start[0]
@@ -771,15 +769,8 @@ def _assign_supervisor_tt_offsets(
     if not active:
         return {}
     period = len(pattern)
-    guard_period = max(1, len(spec.guard_order))
-    horizon = lcm(period, guard_period)
-    guard_index = {name: i for i, name in enumerate(spec.guard_order)}
-
-    def is_guard_week(person: PersonSpec, w: int) -> bool:
-        if person.name not in guard_index or not spec.guard_order:
-            return False
-        monday = anchor + timedelta(days=7 * w)
-        return _week_index(monday, guard_anchor) % guard_period == guard_index[person.name]
+    # La guardia no exime del máximo de TT: cuenta como cualquier semana TT.
+    horizon = period
 
     counts = [0] * horizon
     result: Dict[str, int] = {}
@@ -797,7 +788,7 @@ def _assign_supervisor_tt_offsets(
         off = _offset_for_desired_tt_week(pattern, int(p.start_phase))
         actual_tt = [
             w for w in range(horizon)
-            if _weekly_cycle_token(pattern, w, off) == "TT" and not is_guard_week(p, w)
+            if _weekly_cycle_token(pattern, w, off) == "TT"
         ]
         if any(counts[w] + 1 > maximum for w in actual_tt):
             raise SchedulingError(
@@ -812,10 +803,10 @@ def _assign_supervisor_tt_offsets(
     best_solution = None
     best_score = None
 
-    def rec(i: int, collisions: int):
+    def rec(i: int):
         nonlocal best_solution, best_score
         if i == len(pending):
-            score = (collisions, max(counts) if counts else 0, sum(x * x for x in counts), tuple(result.get(p.name, 0) for p in active))
+            score = (max(counts) if counts else 0, sum(x * x for x in counts), tuple(result.get(p.name, 0) for p in active))
             if best_score is None or score < best_score:
                 best_score = score
                 best_solution = dict(result)
@@ -823,31 +814,21 @@ def _assign_supervisor_tt_offsets(
         p = pending[i]
         options = []
         for off in range(period):
-            actual_tt = []
-            collision_count = 0
-            for w in range(horizon):
-                if _weekly_cycle_token(pattern, w, off) != "TT":
-                    continue
-                if is_guard_week(p, w):
-                    collision_count += 1
-                else:
-                    actual_tt.append(w)
+            actual_tt = [w for w in range(horizon) if _weekly_cycle_token(pattern, w, off) == "TT"]
             if any(counts[w] + 1 > maximum for w in actual_tt):
                 continue
             projected = [counts[w] + (1 if w in actual_tt else 0) for w in range(horizon)]
-            options.append(((collision_count, max(projected), sum(x*x for x in projected), off), off, actual_tt, collision_count))
-        for _, off, actual_tt, collision_count in sorted(options):
-            if best_score is not None and collisions + collision_count > best_score[0]:
-                continue
+            options.append(((max(projected), sum(x*x for x in projected), off), off, actual_tt))
+        for _, off, actual_tt in sorted(options):
             result[p.name] = off
             for w in actual_tt:
                 counts[w] += 1
-            rec(i + 1, collisions + collision_count)
+            rec(i + 1)
             for w in actual_tt:
                 counts[w] -= 1
             result.pop(p.name, None)
 
-    rec(0, 0)
+    rec(0)
     if pending and best_solution is None:
         raise SchedulingError(
             f"Supervisores · {group_people[0].group if group_people else ''}: el ciclo TT no cabe con máximo {maximum}."
@@ -888,20 +869,15 @@ def schedule_supervisores(spec: CalendarSpec, year: int, holidays: Dict[date, Ho
             guard_name = spec.guard_order[gw]
         wi = _week_index(d, anchor)
         for p in spec.people:
-            # Los festivos prevalecen también sobre la guardia: en todos los
-            # calendarios no rotatorios el resultado del día festivo es D.
-            # Se conserva, en cambio, el comportamiento histórico de la guardia
-            # durante fines de semana no festivos.
-            if _rest_for_holiday(holidays.get(d)):
-                code = "D"
-            elif p.name == guard_name:
-                code = "G"
-            elif d.weekday() >= 5:
+            base = p.base_shift or "M"
+            off = offset_by_name.get(p.name, 0)
+            token = _weekly_cycle_token(pattern, wi, off) if p.telework_enabled else "BASE"
+            # La guardia trabaja también en festivos y conserva su ciclo TT.
+            if p.name == guard_name:
+                code = _tt_code("G", p) if token == "TT" else "G"
+            elif _rest_for_holiday(holidays.get(d)) or d.weekday() >= 5:
                 code = "D"
             else:
-                base = p.base_shift or "M"
-                off = offset_by_name.get(p.name, 0)
-                token = _weekly_cycle_token(pattern, wi, off) if p.telework_enabled else "BASE"
                 if token == "TT":
                     code = _tt_code(base, p)
                 elif token in {"BASE", base}:

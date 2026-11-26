@@ -13,6 +13,7 @@ from openpyxl.workbook.properties import CalcProperties
 
 from .catalog import GENERAL_OUTPUT_BASENAME, OUTPUT_BASENAMES
 from .models import CalendarSpec, HolidayInfo, Schedule
+from .legend_reference import install_legend
 from .paths import type_template_file
 from .scheduler import calendar_dates, is_tt_code, is_tt_renounced, visible_code
 
@@ -416,7 +417,7 @@ def generate_general_excel(
       C... = días
 
     Se eliminan las columnas de vacaciones y el resumen mensual N/D/F de
-    Rotatorio. Leyenda, Organización y Festivos permanecen como hojas únicas.
+    Rotatorio. Leyenda y Festivos permanecen como hojas únicas.
     """
     if not generated_calendars:
         raise ValueError("No hay calendarios generados para crear el General CAU.")
@@ -429,7 +430,6 @@ def generate_general_excel(
 
     general_theme_loaded = False
     holiday_source = None
-    organization_source = None
     legend_map = {}
     legend_order = []
     selected_titles = []
@@ -485,10 +485,12 @@ def generate_general_excel(
         holiday_name = next((name for name in source_wb.sheetnames if name.startswith("Festivos ")), None)
         if holiday_source is None and holiday_name:
             holiday_source = (source_path, holiday_name)
-        if organization_source is None and "Organización" in source_wb.sheetnames:
-            organization_source = source_path
 
-        for values in _legend_rows_from_workbook(source_wb):
+        # El General mantiene su leyenda semántica original (no la referencia visual).
+        for values in (tuple((legend.values + [""] * 5)[:5]) for legend in spec.legend):
+            values = tuple(value if value != "" else None for value in values)
+            if not any(value is not None for value in values):
+                continue
             if values not in legend_map:
                 legend_map[values] = []
                 legend_order.append(values)
@@ -504,14 +506,6 @@ def generate_general_excel(
 
     legend_entries = [(values, legend_map[values]) for values in legend_order]
     _write_general_legend(wb, legend_entries, selected_titles)
-
-    if organization_source is not None:
-        org_wb = load_workbook(organization_source, data_only=False)
-        _copy_aux_sheet(org_wb["Organización"], wb, "Organización")
-        org_wb.close()
-    else:
-        org_ws = wb.create_sheet("Organización")
-        org_ws.sheet_view.showGridLines = False
 
     if holiday_source is not None:
         holiday_path, holiday_name = holiday_source
@@ -1134,7 +1128,7 @@ def generate_excel(
     if spec.key == "Rotatorio":
         _restore_rotatorio_vacation_merges(ws, spec)
     _write_holidays(wb, year, community, holidays)
-    _write_legend(wb, spec)
+    install_legend(wb, spec.key == "Rotatorio")
     _write_tt_conteo(wb, spec, schedule, dates, year)
     if spec.key == "Rotatorio":
         _write_rotatorio_ndf(ws, spec, dates, year, layout)

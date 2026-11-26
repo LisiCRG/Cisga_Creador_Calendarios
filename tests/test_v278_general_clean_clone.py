@@ -48,7 +48,7 @@ def test_general_contains_each_operator_once_and_excludes_rotatorio_ndf_block(tm
     wb.close()
 
 
-def test_general_has_one_common_legend_organization_and_holidays(tmp_path):
+def test_general_has_one_common_legend_and_holidays(tmp_path):
     generated = _generate_selected(
         tmp_path,
         ["Intensivo", "Rotatorio", "EasyVista", "Farmacia", "Puesto Usuario", "Sistemas", "Supervisores"],
@@ -59,7 +59,7 @@ def test_general_has_one_common_legend_organization_and_holidays(tmp_path):
     wb = load_workbook(target, data_only=False)
     assert wb.sheetnames.count("General") == 1
     assert wb.sheetnames.count("Leyenda") == 1
-    assert wb.sheetnames.count("Organización") == 1
+    assert "Organización" not in wb.sheetnames
     assert wb.sheetnames.count("Festivos 2027") == 1
     assert not any(name.startswith("_MetaConteo") for name in wb.sheetnames)
     assert "Conteo" not in wb.sheetnames
@@ -90,10 +90,10 @@ def test_general_has_one_common_legend_organization_and_holidays(tmp_path):
     wb.close()
 
 
-def test_general_creates_organization_even_if_selection_has_no_source_sheet(tmp_path):
+def test_general_does_not_create_organization(tmp_path):
     generated = _generate_selected(tmp_path, ["Intensivo", "Rotatorio"])
     target = tmp_path / default_general_output_filename(2027)
     generate_general_excel(generated, 2027, target)
     wb = load_workbook(target, data_only=False)
-    assert "Organización" in wb.sheetnames
+    assert "Organización" not in wb.sheetnames
     wb.close()

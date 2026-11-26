@@ -16,7 +16,7 @@ def test_local_holiday_is_d_in_all_non_rotating_calendars():
     d = date(2027, 5, 13)  # jueves
     holidays = {d: HolidayInfo("San Pedro Regalado", "local", ("local",))}
 
-    for key in ("Intensivo", "EasyVista", "Puesto Usuario", "Farmacia", "Sistemas", "Supervisores"):
+    for key in ("Intensivo", "EasyVista", "Puesto Usuario", "Farmacia", "Sistemas"):
         spec = model.calendars[key]
         schedule = build_schedule(spec, 2027, holidays)
         assert {visible_code(schedule[p.name][d]) for p in spec.people} == {"D"}, key

@@ -94,7 +94,7 @@ class LocalHolidaysDialog(tk.Toplevel):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("GENERADOR DE CUADRANTES v2.8.2 · CiSGA")
+        self.title("GENERADOR DE CUADRANTES v2.8.3 · CiSGA")
         self.geometry("980x820")
         self.minsize(900, 720)
         try:
@@ -126,7 +126,7 @@ class App(tk.Tk):
         root.columnconfigure(1, weight=1)
         root.rowconfigure(12, weight=1)
 
-        ttk.Label(root, text="GENERADOR DE CUADRANTES · v2.8.2", font=("Segoe UI", 20, "bold")).grid(
+        ttk.Label(root, text="GENERADOR DE CUADRANTES · v2.8.3", font=("Segoe UI", 20, "bold")).grid(
             row=0, column=0, columnspan=2, sticky="w", pady=(0, 8)
         )
         if self._logo:

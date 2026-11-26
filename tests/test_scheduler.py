@@ -100,7 +100,7 @@ def test_supervisores_guard_and_group_tt_limit():
     schedule = build_schedule(spec, 2026, {})
     # Daniel tiene G durante toda la primera semana del ancla.
     for d in [date(2025,12,29), date(2026,1,1), date(2026,1,4)]:
-        assert schedule["Daniel"][d] == "G"
+        assert visible_code(schedule["Daniel"][d]) == "G"
     dates = calendar_dates(2026)
     for i in range(0, len(dates), 7):
         week = dates[i:i+7]

@@ -93,7 +93,7 @@ Un turno nuevo hereda la familia M/MA indicada. El patrón TT configurado en la 
 
 ### Supervisores
 
-Un turno nuevo conserva el ciclo TT del grupo. Guardia sigue prevaleciendo.
+Un turno nuevo conserva el ciclo TT del grupo. La guardia conserva G y añade la marca TT cuando coincide con su ciclo, también en festivos.
 
 ## 5. Validación
 

@@ -1,3 +1,9 @@
+## 2.8.3
+- Nuevas leyendas individuales a partir de LeyendasCuadrantes2027.xlsx, sin modificar reglas.
+- Supervisores: guardia en festivos; si coincide con TT, conserva G y la marca TT según su configuración. La guardia cuenta en el límite TT del grupo.
+- General CAU sin Organización ni Conteo; se conserva su leyenda unificada y Festivos.
+- Se conserva la numeración ISO y el resto de calendarios.
+
 ## 2.8.2
 - Corrección de numeración de semanas: las cabeceras usan ahora la semana ISO real de cada lunes.
 - Se soportan años ISO con semana 53 sin asumir un máximo fijo de 52 semanas.

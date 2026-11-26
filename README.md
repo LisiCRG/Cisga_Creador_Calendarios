@@ -1,4 +1,12 @@
-# GENERADOR DE CUADRANTES v2.8.2
+# GENERADOR DE CUADRANTES v2.8.3
+
+## Corrección v2.8.3
+
+- Los calendarios individuales reproducen las hojas del fichero de referencia LeyendasCuadrantes2027.xlsx: Leyenda o LeyendaROTATORIO. Solo se modifica la presentación; los turnos se calculan con la plantilla editable.
+- Supervisores: la guardia trabaja también en festivos. Si coincide con su ciclo TT, conserva G y el borde amarillo (magenta si renuncia); cuenta dentro del máximo TT del grupo.
+- General CAU: solo General, Leyenda unificada anterior y Festivos [año]. Sin Organización, Conteo ni _MetaConteo.
+- Se mantienen la numeración ISO, los individuales restantes y todas las demás reglas.
+
 
 ## Corrección v2.8.2 · Semanas ISO y años con semana 53
 
@@ -12,7 +20,7 @@
 
 - Los festivos locales generan `D` en todos los calendarios no rotatorios.
 - Rotatorio los trata como festivos de trabajo (`MF`, `TF`, `NF`, `RF`, etc.).
-- En Supervisores, un festivo prevalece sobre la guardia (`G`) y se muestra `D`.
+- En Supervisores, la excepción de guardia en festivos fue actualizada en v2.8.3.
 - No hay cambios adicionales de formato, estructura ni reglas.
 
 
@@ -26,7 +34,7 @@
 - El General no incluye columnas de vacaciones ni el resumen N/D/F de Rotatorio.
 - Cada departamento tiene una fila roja en negrita y una separación visual antes del siguiente.
 - Intensivo, Rotatorio y Farmacia reciben una columna de subdepartamento con su propio nombre para alinear todos los bloques.
-- Se mantienen una única **Leyenda**, **Organización** y **Festivos [año]**.
+- Se mantienen una única **Leyenda** y **Festivos [año]**; Organización se elimina del General desde v2.8.3.
 
 Aplicación Windows/Python para generar calendarios SACYL a partir de una **plantilla Excel editable por usuarios**.
 
@@ -180,8 +188,8 @@ Se mantienen:
 - ciclo TT editable;
 - máximos TT por grupo;
 - Guardia semanal;
-- Guardia prevalece sobre TT;
-- reparto TT evita, cuando es posible, que la fase TT de una persona coincida siempre con su Guardia.
+- Guardia trabaja también en festivos y conserva G cuando coincide con TT;
+- Guardia participa en el ciclo TT y en el límite del grupo como cualquier otra persona.
 
 `M2` está disponible y hereda `M1`.
 
