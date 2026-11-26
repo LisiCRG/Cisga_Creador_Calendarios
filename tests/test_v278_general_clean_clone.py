@@ -1,4 +1,5 @@
 from pathlib import Path
+from copy import copy
 
 from openpyxl import load_workbook
 
@@ -48,7 +49,7 @@ def test_general_contains_each_operator_once_and_excludes_rotatorio_ndf_block(tm
     wb.close()
 
 
-def test_general_has_one_common_legend_and_holidays(tmp_path):
+def test_general_has_both_reference_legends_and_holidays(tmp_path):
     generated = _generate_selected(
         tmp_path,
         ["Intensivo", "Rotatorio", "EasyVista", "Farmacia", "Puesto Usuario", "Sistemas", "Supervisores"],
@@ -59,26 +60,28 @@ def test_general_has_one_common_legend_and_holidays(tmp_path):
     wb = load_workbook(target, data_only=False)
     assert wb.sheetnames.count("General") == 1
     assert wb.sheetnames.count("Leyenda") == 1
+    assert wb.sheetnames.count("LeyendaROTATORIO") == 1
     assert "Organización" not in wb.sheetnames
     assert wb.sheetnames.count("Festivos 2027") == 1
     assert not any(name.startswith("_MetaConteo") for name in wb.sheetnames)
     assert "Conteo" not in wb.sheetnames
 
-    ws = wb["Leyenda"]
-    rows = []
-    for r in range(3, ws.max_row + 1):
-        semantic = tuple(ws.cell(r, c).value for c in range(2, 7))
-        if any(v not in (None, "") for v in semantic):
-            rows.append(semantic)
-    assert rows
-    assert len(rows) == len(set(rows))
-
-    d_rows = []
-    for r in range(3, ws.max_row + 1):
-        if ws.cell(r, 2).value == "D":
-            d_rows.append((ws.cell(r, 1).value, tuple(ws.cell(r, c).value for c in range(2, 7))))
-    assert len(d_rows) >= 2
-    assert any("Rotatorio" in str(scope) for scope, _ in d_rows)
+    # Ambas referencias del General son idénticas a las de los individuales.
+    for title, source_idx in (("Leyenda", 0), ("LeyendaROTATORIO", 1)):
+        individual = load_workbook(generated[source_idx][1])
+        expected = individual[title]
+        actual = wb[title]
+        assert actual.max_row == expected.max_row
+        assert actual.max_column == expected.max_column
+        for row in expected.iter_rows():
+            for cell in row:
+                other = actual[cell.coordinate]
+                assert other.value == cell.value
+                for attr in ("font", "fill", "border", "alignment", "number_format"):
+                    assert copy(getattr(other, attr)) == copy(getattr(cell, attr))
+        assert {k: v.width for k, v in actual.column_dimensions.items()} == {k: v.width for k, v in expected.column_dimensions.items()}
+        assert {k: v.height for k, v in actual.row_dimensions.items()} == {k: v.height for k, v in expected.row_dimensions.items()}
+        individual.close()
 
     src = load_workbook(generated[0][1], data_only=False)
     src_h = src["Festivos 2027"]
@@ -96,4 +99,15 @@ def test_general_does_not_create_organization(tmp_path):
     generate_general_excel(generated, 2027, target)
     wb = load_workbook(target, data_only=False)
     assert "Organización" not in wb.sheetnames
+    wb.close()
+
+
+def test_general_always_has_both_legends_even_without_rotatorio(tmp_path):
+    generated = _generate_selected(tmp_path, ["Farmacia"])
+    target = tmp_path / default_general_output_filename(2027)
+    generate_general_excel(generated, 2027, target)
+    wb = load_workbook(target)
+    assert wb.sheetnames == ["General", "Leyenda", "LeyendaROTATORIO", "Festivos 2027"]
+    assert wb["Leyenda"]["E11"].value == "Teletrabajo"
+    assert wb["LeyendaROTATORIO"]["C18"].value == "Teletrabajo"
     wb.close()

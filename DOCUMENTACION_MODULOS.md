@@ -1,4 +1,4 @@
-# Documentación de módulos — GENERADOR DE CUADRANTES v2.8.1
+# Documentación de módulos — GENERADOR DE CUADRANTES v2.8.4
 
 ## `main.py`
 Punto de entrada de la aplicación.
@@ -15,7 +15,7 @@ Novedades v2.7:
 - construye `shift_aliases` (`M2 → M1`, `N2 → N`, etc.);
 - Intensivo usa `Turno base` explícito en lugar de inferir solo reducción;
 - EasyVista/Puesto Usuario permiten que un turno creado herede el ciclo del padre;
-- añade automáticamente turnos creados a la leyenda semántica del General si faltan; las leyendas individuales son referencias visuales fijas desde v2.8.3.
+- mantiene las reglas de turnos creados; las leyendas Excel son referencias visuales fijas desde v2.8.3 en los individuales y desde v2.8.4 en el General.
 
 ## `src/turnos/scheduler.py`
 Motor de planificación.

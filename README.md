@@ -1,10 +1,18 @@
-# GENERADOR DE CUADRANTES v2.8.3
+# GENERADOR DE CUADRANTES v2.8.4
+
+## Corrección v2.8.4 · Leyendas del General CAU
+
+- El General sustituye la leyenda unificada por las dos hojas oficiales de LeyendasCuadrantes2027.xlsx: `Leyenda` y `LeyendaROTATORIO`, en pestañas independientes.
+- Se incluyen siempre ambas, independientemente de los departamentos seleccionados.
+- El General contiene cuatro hojas: General, Leyenda, LeyendaROTATORIO y Festivos [año]. No se recuperan Organización ni Conteo.
+- Sin cambios en turnos, ciclos, festivos, guardias, TT, formatos de cuadrantes ni calendarios individuales.
+
 
 ## Corrección v2.8.3
 
 - Los calendarios individuales reproducen las hojas del fichero de referencia LeyendasCuadrantes2027.xlsx: Leyenda o LeyendaROTATORIO. Solo se modifica la presentación; los turnos se calculan con la plantilla editable.
 - Supervisores: la guardia trabaja también en festivos. Si coincide con su ciclo TT, conserva G y el borde amarillo (magenta si renuncia); cuenta dentro del máximo TT del grupo.
-- General CAU: solo General, Leyenda unificada anterior y Festivos [año]. Sin Organización, Conteo ni _MetaConteo.
+- General CAU: sin Organización, Conteo ni _MetaConteo. La leyenda unificada de v2.8.3 se sustituye por dos leyendas oficiales desde v2.8.4.
 - Se mantienen la numeración ISO, los individuales restantes y todas las demás reglas.
 
 
@@ -34,7 +42,7 @@
 - El General no incluye columnas de vacaciones ni el resumen N/D/F de Rotatorio.
 - Cada departamento tiene una fila roja en negrita y una separación visual antes del siguiente.
 - Intensivo, Rotatorio y Farmacia reciben una columna de subdepartamento con su propio nombre para alinear todos los bloques.
-- Se mantienen una única **Leyenda** y **Festivos [año]**; Organización se elimina del General desde v2.8.3.
+- Organización se elimina del General desde v2.8.3; desde v2.8.4 se incluyen **Leyenda**, **LeyendaROTATORIO** y **Festivos [año]**.
 
 Aplicación Windows/Python para generar calendarios SACYL a partir de una **plantilla Excel editable por usuarios**.
 

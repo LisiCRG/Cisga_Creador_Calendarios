@@ -417,7 +417,7 @@ def generate_general_excel(
       C... = días
 
     Se eliminan las columnas de vacaciones y el resumen mensual N/D/F de
-    Rotatorio. Leyenda y Festivos permanecen como hojas únicas.
+    Rotatorio. Se incluyen Leyenda, LeyendaROTATORIO y Festivos.
     """
     if not generated_calendars:
         raise ValueError("No hay calendarios generados para crear el General CAU.")
@@ -430,9 +430,6 @@ def generate_general_excel(
 
     general_theme_loaded = False
     holiday_source = None
-    legend_map = {}
-    legend_order = []
-    selected_titles = []
     day_count = len(calendar_dates(year))
     common_day_width = None
     common_operator_height = None
@@ -445,7 +442,6 @@ def generate_general_excel(
     for spec, source_path in generated_calendars:
         layout = OUTPUT_LAYOUTS[spec.key]
         source_wb = load_workbook(source_path, data_only=False)
-        selected_titles.append(spec.title)
 
         if not general_theme_loaded:
             wb.loaded_theme = source_wb.loaded_theme
@@ -486,17 +482,6 @@ def generate_general_excel(
         if holiday_source is None and holiday_name:
             holiday_source = (source_path, holiday_name)
 
-        # El General mantiene su leyenda semántica original (no la referencia visual).
-        for values in (tuple((legend.values + [""] * 5)[:5]) for legend in spec.legend):
-            values = tuple(value if value != "" else None for value in values)
-            if not any(value is not None for value in values):
-                continue
-            if values not in legend_map:
-                legend_map[values] = []
-                legend_order.append(values)
-            if spec.title not in legend_map[values]:
-                legend_map[values].append(spec.title)
-
         source_wb.close()
 
     # No hay columnas de vacaciones ni fórmulas resumen en la hoja General.
@@ -504,8 +489,9 @@ def generate_general_excel(
     last_day_col = 2 + day_count
     ws_general.print_area = f"A1:{get_column_letter(last_day_col)}{max(1, current_row - 1)}"
 
-    legend_entries = [(values, legend_map[values]) for values in legend_order]
-    _write_general_legend(wb, legend_entries, selected_titles)
+    # Referencias visuales oficiales, independientes de los departamentos seleccionados.
+    install_legend(wb, False)
+    install_legend(wb, True, keep_other=True)
 
     if holiday_source is not None:
         holiday_path, holiday_name = holiday_source

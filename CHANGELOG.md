@@ -1,3 +1,8 @@
+## 2.8.4
+- El General CAU incorpora Leyenda y LeyendaROTATORIO en dos pestañas independientes, reutilizando las referencias visuales de v2.8.3.
+- Se sustituye la leyenda unificada. Ambas se incluyen siempre, sin Organización ni Conteo.
+- Sin cambios en la planificación ni en los calendarios individuales.
+
 ## 2.8.3
 - Nuevas leyendas individuales a partir de LeyendasCuadrantes2027.xlsx, sin modificar reglas.
 - Supervisores: guardia en festivos; si coincide con TT, conserva G y la marca TT según su configuración. La guardia cuenta en el límite TT del grupo.
